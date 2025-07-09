@@ -1,26 +1,23 @@
-📋 Todo List
-A simple and modular Todo List application built with vanilla JavaScript. Designed as a learning project, it demonstrates object-oriented programming, modular architecture, DOM manipulation, and data persistence using localStorage.
+# 📋 Todo List
 
-👉 [Live on Github Pages](https://sibonginhlanhla.github.io/to-do-list/) 
+A simple and modular Todo List application built with vanilla JavaScript. Designed as a learning project, it demonstrates object-oriented programming, modular architecture, DOM manipulation, and data persistence using `localStorage`.
 
-🚀 Features
-Create, edit, and delete Todo items
+👉 [Live on Github Pages](https://sibonginhlanhla.github.io/to-do-list/)
 
-Each Todo includes:
+---
 
-Title
+## 🚀 Features
 
-Description
+- Create, edit, and delete **Todo items**
 
-Due date
+### Each Todo includes:
+- **Title**
+- **Description**
+- **Due date**
+- **Priority** (with visual indicator)
 
-Priority (with visual indicator)
-
-Organize todos into Projects
-
-Default project created on first load
-
-View todos by project
-
-Persistent data using localStorage
-
+### Additional Features:
+- Organize todos into **Projects**
+- **Default project** created on first load
+- View todos by **project**
+- Persistent data using **localStorage**
