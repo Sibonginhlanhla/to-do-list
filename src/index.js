@@ -7,13 +7,13 @@ function createTable(x){
         <tr>
             <th>title</th>
             <th>description</th>
-            <th>dueDate</th>
+            <th>due date</th>
             <th>priority</th>
             <th>progress</th>
             <th>remove</th>
         </tr>
     `;
-    content.appendChild(x);
+    // content.appendChild(x);
 }
 
 function refreshProjectOptions() {
@@ -77,10 +77,9 @@ if (storedLibrary) {
 } else {
     myProjects = [
         {
-            name: "Campus Safety App",
+            name: "Default",
             arr: [
-                new Item("Finalize emergency alert API", "Complete testing for real-time alerts", "02/05", "High", false),
-                new Item("Style profile page", "Center profile image and add 'Edit Image' button", "03/05", "Medium", false)
+                new Item("Default item", "Delete this other default projects, beign add you items!", "02/05", "High", false),
             ]
         },
         {
@@ -102,12 +101,10 @@ if (storedLibrary) {
 }
 
 const cap = document.querySelector("caption");
-cap.textContent = "def";
-cap.style.color = "black";
-cap.style.fontSize = "47px";
+cap.textContent = "Default";
 
 for (let i of myProjects){
-    if (i.name === "def"){
+    if (i.name === "Default"){
         for (let j of i.arr)renderItems(j, table);
     }
 }
@@ -190,7 +187,7 @@ for (let project of myProjects){
     option.value = project.name;
     option.textContent = project.name;
     
-    if (project.name === "def") {
+    if (project.name === "Default") {
         option.selected = true;
     }
     selectProj.appendChild(option);
