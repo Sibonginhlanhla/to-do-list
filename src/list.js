@@ -1,3 +1,145 @@
+import { updateLocalStorage, reloadFromStorage } from "./index";
+
+class Item {
+    constructor(title, description, dueDate, priority, checked = false) {
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.priority = priority;
+        this.checked = checked;
+    }
+}
+
+function addProject(name) {
+    const myProjects = JSON.parse(localStorage.getItem("myProjects")) || [];
+    myProjects.push({ name, arr: [] });
+    localStorage.setItem("myProjects", JSON.stringify(myProjects));
+}
+
+function addItem(projectName, item) {
+    const myProjects = JSON.parse(localStorage.getItem("myProjects")) || [];
+    const project = myProjects.find(p => p.name === projectName);
+    if (project) {
+        project.arr.push(item);
+        localStorage.setItem("myProjects", JSON.stringify(myProjects));
+    }
+}
+
+function renderItems(item, table) {
+    const row = document.createElement("tr");
+
+    // Set priority text color
+    const priorityColor = item.priority === "High" ? "red" : "green";
+
+    // Dim row if completed
+    if (item.checked) {
+        row.style.backgroundColor = "#444";
+        row.style.opacity = "0.6";
+    }
+
+    row.innerHTML = `
+        <td>${item.title}</td>
+        <td>${item.description}</td>
+        <td>${item.dueDate}</td>
+        <td style="color:${priorityColor}; font-weight:bold">${item.priority}</td>
+        <td><input type="checkbox" ${item.checked ? "checked" : ""}></td>
+        <td><button class="delete-btn">X</button></td>
+    `;
+
+    // Checkbox toggle
+    const checkbox = row.querySelector("input[type=checkbox]");
+    checkbox.addEventListener("change", () => {
+        item.checked = checkbox.checked;
+
+        // Update live memory data
+        const myProjects = JSON.parse(localStorage.getItem("myProjects"));
+        for (const project of myProjects) {
+            const match = project.arr.find(i =>
+                i.title === item.title &&
+                i.description === item.description &&
+                i.dueDate === item.dueDate
+            );
+            if (match) {
+                match.checked = item.checked;
+                break;
+            }
+        }
+
+        updateLocalStorage();
+
+        if (item.checked) {
+            row.style.backgroundColor = "#444";
+            row.style.opacity = "0.6";
+        } else {
+            row.style.backgroundColor = "";
+            row.style.opacity = "1";
+        }
+    });
+
+    // Delete logic
+    row.querySelector(".delete-btn").addEventListener("click", () => {
+        const myProjects = JSON.parse(localStorage.getItem("myProjects"));
+        for (const project of myProjects) {
+            const index = project.arr.findIndex(i =>
+                i.title === item.title &&
+                i.description === item.description &&
+                i.dueDate === item.dueDate
+            );
+            if (index !== -1) {
+                project.arr.splice(index, 1);
+                break;
+            }
+        }
+
+        localStorage.setItem("myProjects", JSON.stringify(myProjects));
+        reloadFromStorage(); 
+        updateLocalStorage();
+        row.remove(); 
+    });
+
+
+    table.appendChild(row);
+}
+
+
+function updateItemCheckedState(updatedItem) {
+    const myProjects = JSON.parse(localStorage.getItem("myProjects")) || [];
+    for (let project of myProjects) {
+        const match = project.arr.find(item =>
+            item.title === updatedItem.title &&
+            item.description === updatedItem.description &&
+            item.dueDate === updatedItem.dueDate
+        );
+        if (match) {
+            match.checked = updatedItem.checked;
+            break;
+        }
+    }
+    localStorage.setItem("myProjects", JSON.stringify(myProjects));
+}
+
+function removeItem(itemToRemove) {
+    const myProjects = JSON.parse(localStorage.getItem("myProjects")) || [];
+
+    for (let project of myProjects) {
+        const index = project.arr.findIndex(item =>
+            item.title === itemToRemove.title &&
+            item.description === itemToRemove.description &&
+            item.dueDate === itemToRemove.dueDate
+        );
+        if (index !== -1) {
+            project.arr.splice(index, 1);
+            break;
+        }
+    }
+
+    localStorage.setItem("myProjects", JSON.stringify(myProjects));
+}
+
+export { renderItems, addItem, addProject, Item };
+
+
+/*
 import {updateLocalStorage} from "./index.js";
 
 function Item(title, description, dueDate, priority, checked = false) {
@@ -94,3 +236,4 @@ function renderItems(obj, table){
 }
 
 export {renderItems, addItem, addProject, Item}
+*/

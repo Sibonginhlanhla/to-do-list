@@ -1,141 +1,161 @@
 body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 header {
-    background-color: #1F2937;
-    font-family: Roboto;
-    color: white;
-    font-size: 36px;
-    font-weight: 900;
-    text-align: center;
+  background-color: #1F2937;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
 }
 
 h1 {
-    margin: 0px;
+  margin: 0;
 }
 
 #add {
-    background-color: darkgrey;
-    display: flex;
-    gap: 45px;
-    justify-content: center;
-    align-items: center;
+  background-color: darkgrey;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
 }
 
 button {
-    background-color: #1F2937;
-    font-family: Roboto;
-    color: white;
-    border-radius: 17px;
-    margin-block: 11px;    
+  background-color: #1F2937;
+  color: white;
+  border: none;
+  border-radius: 17px;
+  padding: 0.6em 1.2em;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #374151;
-    cursor: pointer;
-}
-
-#add button {
-    padding: 0.5em 1em;
-    font-size: 0.9rem;
+  background-color: #374151;
+  cursor: pointer;
 }
 
 table {
-    border-collapse: collapse;
-    border: 2px solid white;
-    letter-spacing: 1px;
-    font-size: 0.8rem;
-    background-color: #1F2937; /* match buttons */
-    color: white;
-    margin: 2rem auto;
-    width: 90%;
-    max-width: 1000px;
-    text-align: center;
+  border-collapse: collapse;
+  border: 2px solid white;
+  font-size: 0.8rem;
+  background-color: #1F2937;
+  color: white;
+  margin: 2rem auto;
+  width: 90%;
+  max-width: 1000px;
+  text-align: center;
 }
 
 table caption {
-    color: white;
-    font-size: 1.8rem;
-    font-weight: bold;
-    padding: 10px;
+  color: white;
+  font-size: 1.8rem;
+  font-weight: bold;
+  padding: 10px;
 }
-
 
 td, th {
-    border: 1px solid white;
-    padding: 10px 20px;
-}
-
-td {
-    text-align: center;
+  border: 1px solid white;
+  padding: 10px 20px;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
-    gap: 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
 }
 
 .form-element {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .project-card {
-    border: 1px solid #ccc;
-    padding: 1em;
-    margin: 1em 0;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 1em;
+  margin: 1em auto;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  color: black;
+  max-width: 500px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .project-card h2 {
-    margin: 0 0 0.5em;
+  margin-bottom: 0.5em;
 }
 
-@media (max-width: 600px) {
-    form {
-        padding: 1em;
-    }
-
-    .form-element input, .form-element select {
-        font-size: 1em;
-    }
-
-    table, th, td {
-        font-size: 0.65rem;
-        padding: 5px;
-    }
-
-    .project-card {
-        padding: 0.5em;
-        margin: 0.5em;
-    }
-
-    #add {
-        flex-direction: column;
-        gap: 15px;
-    }
-}
-
-dialog {
-    border: none;
-    border-radius: 12px;
-    padding: 2em;
-    background: white;
-    color: black;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
-    width: 90%;
-    max-width: 400px;
+.project-card ul {
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
 }
 
 #content {
-    background-color: #111827;
-    padding: 2rem;
-    min-height: 100vh;
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+  background-color: #111827;
+  padding: 2rem;
+  min-height: 100vh;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
+dialog {
+  border: none;
+  border-radius: 12px;
+  padding: 2em;
+  background: white;
+  color: black;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+.delete-btn {
+  background-color: crimson;
+  border: none;
+  color: white;
+  padding: 0.3em 0.8em;
+  border-radius: 5px;
+}
+
+.delete-btn:hover {
+  background-color: darkred;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  table, th, td {
+    font-size: 0.7rem;
+    padding: 6px;
+  }
+
+  #add {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .project-card {
+    padding: 0.6em;
+    margin: 0.6em;
+  }
+
+  form {
+    padding: 0.5rem;
+  }
+
+  .form-element input, .form-element select {
+    font-size: 1rem;
+    padding: 0.3em;
+  }
+
+  button {
+    font-size: 0.9rem;
+  }
+}

@@ -1,6 +1,177 @@
 import "./styles.css";
 import { renderItems, addItem, addProject, Item } from "./list";
 
+let myProjects = [];
+
+function updateLocalStorage() {
+    localStorage.setItem("myProjects", JSON.stringify(myProjects));
+}
+
+function reloadFromStorage() {
+    const stored = localStorage.getItem("myProjects");
+    if (stored) {
+        myProjects = JSON.parse(stored).map(project => ({
+            name: project.name,
+            arr: project.arr.map(item => new Item(item.title, item.description, item.dueDate, item.priority, item.checked))
+        }));
+    }
+}
+
+function createTable(table) {
+    table.innerHTML = `
+        <caption></caption>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Due Date</th>
+            <th>Priority</th>
+            <th>Progress</th>
+            <th>Remove</th>
+        </tr>
+    `;
+}
+
+function renderProjectTable(projectName) {
+    content.textContent = "";
+    const table = document.createElement("table");
+    createTable(table);
+    content.appendChild(table);
+
+    const caption = table.querySelector("caption");
+    caption.textContent = projectName;
+    caption.style.color = "white";
+    caption.style.fontSize = "2rem";
+
+    const selectedProject = myProjects.find(p => p.name === projectName);
+    if (selectedProject) {
+        selectedProject.arr.forEach(item => renderItems(item, table));
+    }
+}
+
+function refreshProjectOptions() {
+    const selects = [document.querySelector("#project"), document.querySelector("#projectSelect")];
+    selects.forEach(select => {
+        select.innerHTML = "";
+        myProjects.forEach(project => {
+            const opt = new Option(project.name, project.name);
+            select.appendChild(opt);
+        });
+    });
+}
+
+// DOM elements
+const content = document.querySelector("#content");
+const buttonDiv = document.querySelector("#add");
+
+// Load or set up initial data
+const stored = localStorage.getItem("myProjects");
+if (stored) {
+    const parsed = JSON.parse(stored);
+    myProjects = parsed.map(project => ({
+        name: project.name,
+        arr: project.arr.map(item => new Item(item.title, item.description, item.dueDate, item.priority, item.checked))
+    }));
+} else {
+    myProjects = [
+        { name: "Default", arr: [new Item("Welcome!", "Add your tasks here.", "", "High", false)] },
+    ];
+    updateLocalStorage();
+}
+
+// Add buttons
+["New Project", "New Item", "Select Project", "View Projects"].forEach((text, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = text;
+    buttonDiv.appendChild(btn);
+
+    if (i === 0) btn.onclick = () => newProjectDialog.showModal();
+    if (i === 1) btn.onclick = () => newItemDialog.showModal();
+    if (i === 2) btn.onclick = () => selectProjectDialog.showModal();
+    if (i === 3) btn.onclick = () => {
+        content.textContent = "";
+        const h1 = document.createElement("h1");
+        h1.textContent = "My Projects";
+        content.appendChild(h1);
+
+        myProjects.forEach((project, idx) => {
+            const card = document.createElement("div");
+            card.className = "project-card";
+
+            card.innerHTML = `
+                <h2>${project.name}</h2>
+                <p>Items: ${project.arr.length}</p>
+                <ul>
+                    ${project.arr.slice(0, 3).map(i => `<li>${i.title} - ${i.dueDate}</li>`).join("")}
+                </ul>
+                <button class="delete">Delete</button>
+            `;
+
+            card.querySelector(".delete").onclick = () => {
+                if (confirm(`Delete project '${project.name}'?`)) {
+                    myProjects.splice(idx, 1);
+                    updateLocalStorage();
+                    refreshProjectOptions();
+                    btn.click();
+                }
+            };
+
+            content.appendChild(card);
+        });
+    };
+});
+
+// Dialogs and form elements
+const newItemDialog = document.querySelector("#newItemDialog");
+const newProjectDialog = document.querySelector("#newProjectDialog");
+const selectProjectDialog = document.querySelector("#selectProjectDialog");
+
+const confirmProjectBtn = document.querySelector("#confirmProjectBtn");
+confirmProjectBtn.onclick = () => {
+    const name = document.querySelector("#projectName").value.trim();
+    if (!name) return alert("Enter a valid name.");
+    if (myProjects.find(p => p.name === name)) return alert("Project exists.");
+
+    addProject(name);
+    myProjects.push({ name, arr: [] });
+    updateLocalStorage();
+    refreshProjectOptions();
+    newProjectDialog.close();
+};
+
+const confirmBtn = document.querySelector("#confirmBtn");
+confirmBtn.onclick = () => {
+    const title = document.querySelector("#title").value;
+    const desc = document.querySelector("#desc").value;
+    const date = document.querySelector("#date").value;
+    const priority = document.querySelector("#priority").value;
+    const project = document.querySelector("#project").value;
+
+    const newItem = new Item(title, desc, date, priority);
+    const target = myProjects.find(p => p.name === project);
+    if (target) {
+        target.arr.push(newItem);
+        updateLocalStorage();
+        newItemDialog.close();
+    }
+};
+
+const confirmSelectBtn = document.querySelector("#confirmSelectBtn");
+confirmSelectBtn.onclick = () => {
+    const project = document.querySelector("#projectSelect").value;
+    renderProjectTable(project);
+    selectProjectDialog.close();
+};
+
+refreshProjectOptions();
+renderProjectTable("Default");
+
+export { updateLocalStorage, reloadFromStorage };
+
+
+/*
+import "./styles.css";
+import { renderItems, addItem, addProject, Item } from "./list";
+
 function createTable(x){
     x.innerHTML = `
         <caption></caption>
@@ -182,17 +353,7 @@ document.body.appendChild(dialog);
 //add project options in the appropriate forms (select project and add new items forms)
 const select = document.querySelector("#project");
 const selectProj = document.querySelector("#projectSelect");
-for (let project of myProjects){
-    const option = document.createElement("option");
-    option.value = project.name;
-    option.textContent = project.name;
-    
-    if (project.name === "Default") {
-        option.selected = true;
-    }
-    selectProj.appendChild(option);
-    select.appendChild(option.cloneNode(true));
-}
+refreshProjectOptions();
 
 //forms elements
 const cancelSelectBtn = document.querySelector("#cancelSelectBtn");
@@ -270,6 +431,15 @@ buttonFour.addEventListener("click", () => {
 
 confirmProjectBtn.addEventListener("click", (event) => {
     event.preventDefault();
+    
+    if (!newProject.value) {
+        alert("Project name cannot be empty!");
+        return;
+    }
+    if (myProjects.some(p => p.name === newProject.value)) {
+        alert("Project name already exists!");
+        return;
+    }
     addProject(newProject.value);
     alert("new project added succsesfully!")
     
@@ -339,3 +509,4 @@ cancelSelectBtn.addEventListener("click", () => {
 });
  
 export {updateLocalStorage};
+*/
